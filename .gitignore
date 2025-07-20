@@ -43,3 +43,13 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# 项目重构和学习文档（不同步到git）
+REFACTOR_SUMMARY.md
+*_SUMMARY.md
+*_总结.md
+学习笔记.md
+开发笔记.md
+
+#无关素材
+*.pdf
