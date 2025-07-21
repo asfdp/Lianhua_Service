@@ -5,6 +5,7 @@ import '../widgets/menu_grid_widget.dart';
 import '../widgets/notification_widget.dart';
 import '../constants/app_constants.dart';
 import '../utils/app_colors.dart';
+import '../utils/app_text_styles.dart';
 import '../utils/festival_theme_manager.dart';
 import 'repair_page.dart';
 import 'payment_page.dart';
@@ -21,69 +22,102 @@ class _HomePageState extends State<HomePage> {
   final List<NotificationItem> _notifications = [
     NotificationItem(
       title: '缴费提醒',
-      content: '2023年7月物业管理费缴费提醒',
-      time: '4小时前',
+      content: '2025年1月物业管理费缴费提醒',
+      time: '2小时前',
     ),
     NotificationItem(
       title: '保洁工作通知',
-      content: '7月保洁时间日程安排',
-      time: '7月10日',
+      content: '1月保洁时间日程安排',
+      time: '1月10日',
     ),
     NotificationItem(
       title: '服务升级',
-      content: '2023年6月滇池卫城物业服务升级',
-      time: '6月28日',
+      content: '2025年1月滇池卫城物业服务升级',
+      time: '1月8日',
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // 顶部导航栏
-        _buildTopBar(),
-        
-        // 轮播图
-        BannerWidget(
-          images: AppConstants.bannerImages,
-          height: AppConstants.bannerHeight,
-          autoPlayDuration: AppConstants.bannerAutoPlayDuration,
-        ),
-        
-        // 🎊 节日提示卡片
-        _buildFestivalCard(),
-        
-        // 功能菜单
-        _buildMenuSection(),
-        
-        // 底部消息提醒
-        NotificationWidget(
-          title: '物业公告',
-          notifications: _notifications,
-          unreadCount: 3,
-        ),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // 顶部导航栏
+          _buildTopBar(),
+          
+          // 轮播图
+          BannerWidget(
+            images: AppConstants.bannerImages,
+            height: AppConstants.bannerHeight,
+            autoPlayDuration: AppConstants.bannerAutoPlayDuration,
+          ),
+          
+          // 🎊 节日提示卡片
+          _buildFestivalCard(),
+          
+          // 功能菜单
+          _buildMenuSection(),
+          
+          // 底部消息提醒
+          NotificationWidget(
+            title: '物业公告',
+            notifications: _notifications,
+            unreadCount: 3,
+          ),
+          
+          // 底部间距
+          SizedBox(height: AppConstants.moduleSpacing),
+        ],
+      ),
     );
   }
-
-
 
   // 顶部导航栏
   Widget _buildTopBar() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      color: Colors.white,
+      padding: EdgeInsets.symmetric(
+        horizontal: AppConstants.pageMargin, 
+        vertical: AppConstants.paragraphSpacing,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        border: Border(
+          bottom: BorderSide(color: AppColors.dividerColor, width: 1),
+        ),
+      ),
       child: Row(
         children: [
-          Icon(Icons.location_on, color: Theme.of(context).primaryColor, size: 20),
-          SizedBox(width: 8),
+          Icon(
+            Icons.location_on_outlined,
+            color: AppColors.accentColor,
+            size: AppConstants.mediumIconSize,
+          ),
+          SizedBox(width: AppConstants.lineSpacing),
           Text(
             AppConstants.communityName,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            style: AppTextStyles.h2.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          Icon(Icons.keyboard_arrow_down, color: AppColors.grey600),
+          SizedBox(width: AppConstants.lineSpacing / 2),
+          Icon(
+            Icons.keyboard_arrow_down,
+            color: AppColors.secondaryTextColor,
+            size: AppConstants.mediumIconSize,
+          ),
           Spacer(),
-          Icon(Icons.message, color: AppColors.grey600),
+          Container(
+            padding: EdgeInsets.all(AppConstants.lineSpacing),
+            decoration: BoxDecoration(
+              color: AppColors.primaryColor,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.notifications_outlined,
+              color: AppColors.accentColor,
+              size: AppConstants.mediumIconSize,
+            ),
+          ),
         ],
       ),
     );
@@ -102,24 +136,29 @@ class _HomePageState extends State<HomePage> {
     final festivalGreeting = FestivalThemeManager.getFestivalGreeting(currentFestival);
     
     return Container(
-      margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
-      padding: EdgeInsets.all(16),
+      margin: EdgeInsets.fromLTRB(
+        AppConstants.pageMargin, 
+        AppConstants.cardSpacing, 
+        AppConstants.pageMargin, 
+        AppConstants.cardSpacing,
+      ),
+      padding: EdgeInsets.all(AppConstants.pageMargin),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).primaryColor.withOpacity(0.8),
-            Theme.of(context).primaryColor.withOpacity(0.6),
+            AppColors.accentColor.withOpacity(0.9),
+            AppColors.assistantColor.withOpacity(0.8),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppConstants.cardRadius),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).primaryColor.withOpacity(0.3),
-            spreadRadius: 1,
-            blurRadius: 8,
-            offset: Offset(0, 4),
+            color: AppColors.shadowColor,
+            blurRadius: AppConstants.shadowBlurRadius,
+            spreadRadius: AppConstants.shadowSpreadRadius,
+            offset: AppConstants.shadowOffset,
           ),
         ],
       ),
@@ -127,7 +166,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           // 节日图标
           Container(
-            padding: EdgeInsets.all(12),
+            padding: EdgeInsets.all(AppConstants.paragraphSpacing),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
               shape: BoxShape.circle,
@@ -135,10 +174,10 @@ class _HomePageState extends State<HomePage> {
             child: Icon(
               _getFestivalIcon(currentFestival),
               color: Colors.white,
-              size: 32,
+              size: AppConstants.largeIconSize,
             ),
           ),
-          SizedBox(width: 16),
+          SizedBox(width: AppConstants.pageMargin),
           
           // 节日信息
           Expanded(
@@ -147,17 +186,15 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Text(
                   festivalName,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                  style: AppTextStyles.h1.copyWith(
                     color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 4),
+                SizedBox(height: AppConstants.lineSpacing),
                 Text(
                   festivalGreeting,
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: AppTextStyles.body.copyWith(
                     color: Colors.white.withOpacity(0.9),
                   ),
                 ),
@@ -169,7 +206,7 @@ class _HomePageState extends State<HomePage> {
           Icon(
             Icons.celebration,
             color: Colors.white.withOpacity(0.7),
-            size: 24,
+            size: AppConstants.mediumIconSize,
           ),
         ],
       ),
@@ -208,12 +245,33 @@ class _HomePageState extends State<HomePage> {
       final item = entry.value;
       return MenuItem(
         title: item['title']!,
-        color: colors[index],
+        color: colors[index % colors.length],
         onTap: () => _handleMenuTap(item['title']!),
       );
     }).toList();
 
-    return MenuGridWidget(menuItems: menuItems);
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: AppConstants.pageMargin,
+        vertical: AppConstants.cardSpacing,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: AppConstants.lineSpacing),
+            child: Text(
+              '服务功能',
+              style: AppTextStyles.h1.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          SizedBox(height: AppConstants.paragraphSpacing),
+          MenuGridWidget(menuItems: menuItems),
+        ],
+      ),
+    );
   }
 
   // 处理菜单点击事件
@@ -233,9 +291,19 @@ class _HomePageState extends State<HomePage> {
         break;
       default:
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$title功能正在开发中')),
+          SnackBar(
+            content: Text(
+              '$title功能正在开发中',
+              style: AppTextStyles.body.copyWith(color: Colors.white),
+            ),
+            backgroundColor: AppColors.accentColor,
+            behavior: SnackBarBehavior.floating,
+            margin: EdgeInsets.all(AppConstants.pageMargin),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppConstants.buttonRadius),
+            ),
+          ),
         );
     }
   }
-
 } 

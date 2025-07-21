@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import '../constants/app_constants.dart';
+import '../utils/app_colors.dart';
+import '../utils/app_text_styles.dart';
 
 class BannerWidget extends StatefulWidget {
   final List<String> images;
@@ -45,7 +48,7 @@ class _BannerWidgetState extends State<BannerWidget> {
       if (_pageController.hasClients) {
         _pageController.animateToPage(
           _currentIndex,
-          duration: Duration(milliseconds: 700),
+          duration: AppConstants.bannerAnimationDuration,
           curve: Curves.easeInOut,
         );
       }
@@ -63,7 +66,7 @@ class _BannerWidgetState extends State<BannerWidget> {
 
   void delayedResumeBannerTimer() {
     pauseBannerTimer();
-    Timer(Duration(milliseconds: 1000), () {
+    Timer(AppConstants.bannerResumeDelay, () {
       _startBannerTimer();
     });
   }
@@ -71,13 +74,27 @@ class _BannerWidgetState extends State<BannerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
+      margin: EdgeInsets.symmetric(
+        horizontal: AppConstants.pageMargin,
+        vertical: AppConstants.cardSpacing,
+      ),
       height: widget.height,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppConstants.cardRadius),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowColor,
+            blurRadius: AppConstants.shadowBlurRadius,
+            spreadRadius: AppConstants.shadowSpreadRadius,
+            offset: AppConstants.shadowOffset,
+          ),
+        ],
+      ),
       child: Stack(
         children: [
           // 轮播图
           ClipRRect(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppConstants.cardRadius),
             child: GestureDetector(
               onPanDown: (details) {
                 pauseBannerTimer();
@@ -96,7 +113,7 @@ class _BannerWidgetState extends State<BannerWidget> {
                 itemBuilder: (context, index) {
                   return Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppConstants.cardRadius),
                     ),
                     child: Image.asset(
                       widget.images[index],
@@ -106,9 +123,12 @@ class _BannerWidgetState extends State<BannerWidget> {
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(AppConstants.cardRadius),
                             gradient: LinearGradient(
-                              colors: [Colors.blue[300]!, Colors.blue[100]!],
+                              colors: [
+                                AppColors.accentColor.withOpacity(0.8),
+                                AppColors.primaryVariant1.withOpacity(0.6),
+                              ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
@@ -118,16 +138,15 @@ class _BannerWidgetState extends State<BannerWidget> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  Icons.image_not_supported,
+                                  Icons.image_not_supported_outlined,
                                   color: Colors.white,
-                                  size: 40,
+                                  size: AppConstants.extraLargeIconSize,
                                 ),
-                                SizedBox(height: 8),
+                                SizedBox(height: AppConstants.lineSpacing),
                                 Text(
                                   '图片加载失败',
-                                  style: TextStyle(
+                                  style: AppTextStyles.body.copyWith(
                                     color: Colors.white,
-                                    fontSize: 14,
                                   ),
                                 ),
                               ],
@@ -144,18 +163,18 @@ class _BannerWidgetState extends State<BannerWidget> {
           
           // 指示器
           Positioned(
-            bottom: 16,
+            bottom: AppConstants.pageMargin,
             left: 0,
             right: 0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(widget.images.length, (index) {
                 return Container(
-                  width: 8,
+                  width: _currentIndex == index ? 16 : 8,
                   height: 8,
-                  margin: EdgeInsets.symmetric(horizontal: 4),
+                  margin: EdgeInsets.symmetric(horizontal: 2),
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
+                    borderRadius: BorderRadius.circular(4),
                     color: _currentIndex == index 
                         ? Colors.white 
                         : Colors.white.withOpacity(0.5),

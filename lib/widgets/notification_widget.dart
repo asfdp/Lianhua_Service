@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../constants/app_constants.dart';
+import '../utils/app_colors.dart';
+import '../utils/app_text_styles.dart';
 
 class NotificationItem {
   final String title;
@@ -30,40 +33,32 @@ class NotificationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: Container(
-        margin: EdgeInsets.fromLTRB(16, 8, 16, 16),
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 5,
-            ),
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: AppConstants.pageMargin,
+        vertical: AppConstants.cardSpacing,
+      ),
+      padding: EdgeInsets.all(AppConstants.pageMargin),
+      decoration: AppConstants.cardDecoration,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(),
+          SizedBox(height: AppConstants.paragraphSpacing),
+          
+          // 消息列表
+          Column(
+            children: notifications.take(3).map((notification) => 
+              _buildNotificationItem(notification)
+            ).toList(),
+          ),
+          
+          // 查看更多按钮
+          if (notifications.length > 3) ...[
+            SizedBox(height: AppConstants.lineSpacing),
+            _buildMoreButton(),
           ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildHeader(),
-            SizedBox(height: 8),
-            
-            // 消息列表
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: notifications.map((notification) => 
-                    _buildNotificationItem(notification)
-                  ).toList(),
-                ),
-              ),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -71,35 +66,34 @@ class NotificationWidget extends StatelessWidget {
   Widget _buildHeader() {
     return Row(
       children: [
+        Icon(
+          Icons.campaign_outlined,
+          color: AppColors.accentColor,
+          size: AppConstants.mediumIconSize,
+        ),
+        SizedBox(width: AppConstants.lineSpacing),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey[800],
+          style: AppTextStyles.h2.copyWith(
+            fontWeight: FontWeight.w600,
           ),
         ),
         Spacer(),
         if (unreadCount > 0) ...[
-          Text(
-            '更多消息未读',
-            style: TextStyle(
-              fontSize: 10,
-              color: Colors.grey[500],
-            ),
-          ),
           Container(
-            margin: EdgeInsets.only(left: 4),
-            padding: EdgeInsets.all(2),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppConstants.lineSpacing,
+              vertical: 2,
+            ),
             decoration: BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.circle,
+              color: AppColors.errorColor,
+              borderRadius: BorderRadius.circular(AppConstants.smallRadius),
             ),
             child: Text(
               unreadCount.toString(),
-              style: TextStyle(
+              style: AppTextStyles.caption.copyWith(
                 color: Colors.white,
-                fontSize: 8,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
@@ -110,49 +104,96 @@ class NotificationWidget extends StatelessWidget {
 
   Widget _buildNotificationItem(NotificationItem notification) {
     return Container(
-      margin: EdgeInsets.only(bottom: 4),
+      margin: EdgeInsets.only(bottom: AppConstants.lineSpacing),
+      padding: EdgeInsets.all(AppConstants.paragraphSpacing),
+      decoration: BoxDecoration(
+        color: notification.isRead ? AppColors.backgroundColor : AppColors.primaryColor,
+        borderRadius: BorderRadius.circular(AppConstants.mediumRadius),
+        border: Border.all(
+          color: notification.isRead ? AppColors.dividerColor : AppColors.accentColor.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
       child: Row(
         children: [
           Container(
-            width: 6,
-            height: 6,
+            width: AppConstants.lineSpacing,
+            height: AppConstants.lineSpacing,
             decoration: BoxDecoration(
-              color: notification.isRead ? Colors.grey[400] : Colors.orange,
+              color: notification.isRead ? AppColors.hintTextColor : AppColors.accentColor,
               shape: BoxShape.circle,
             ),
           ),
-          SizedBox(width: 8),
+          SizedBox(width: AppConstants.paragraphSpacing),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   notification.title,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[800],
+                  style: AppTextStyles.body.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: notification.isRead ? AppColors.secondaryTextColor : AppColors.primaryTextColor,
                   ),
                 ),
-                SizedBox(height: 1),
+                SizedBox(height: AppConstants.lineSpacing / 2),
                 Text(
                   notification.content,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.grey[600],
+                  style: AppTextStyles.caption.copyWith(
+                    color: notification.isRead ? AppColors.hintTextColor : AppColors.secondaryTextColor,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
-          Text(
-            notification.time,
-            style: TextStyle(
-              fontSize: 10,
-              color: Colors.grey[500],
-            ),
+          SizedBox(width: AppConstants.lineSpacing),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                notification.time,
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.hintTextColor,
+                ),
+              ),
+            ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMoreButton() {
+    return GestureDetector(
+      onTap: onMoreTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: AppConstants.paragraphSpacing),
+        decoration: BoxDecoration(
+          color: AppColors.primaryVariant1,
+          borderRadius: BorderRadius.circular(AppConstants.mediumRadius),
+          border: Border.all(color: AppColors.dividerColor, width: 1),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '查看更多消息',
+              style: AppTextStyles.body.copyWith(
+                color: AppColors.accentColor,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(width: AppConstants.lineSpacing),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: AppColors.accentColor,
+              size: AppConstants.smallIconSize,
+            ),
+          ],
+        ),
       ),
     );
   }

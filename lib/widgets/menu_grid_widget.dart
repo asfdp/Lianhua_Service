@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../constants/app_constants.dart';
+import '../utils/app_colors.dart';
+import '../utils/app_text_styles.dart';
 
 class MenuItem {
   final String title;
@@ -29,19 +32,8 @@ class MenuGridWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
-      ),
+      padding: EdgeInsets.all(AppConstants.pageMargin),
+      decoration: AppConstants.cardDecoration,
       child: Column(
         children: _buildRows(),
       ),
@@ -66,7 +58,7 @@ class MenuGridWidget extends StatelessWidget {
       
       // 添加间距，除了最后一行
       if (i + crossAxisCount < menuItems.length) {
-        rows.add(SizedBox(height: 12));
+        rows.add(SizedBox(height: AppConstants.sectionSpacing));
       }
     }
     
@@ -76,30 +68,47 @@ class MenuGridWidget extends StatelessWidget {
   Widget _buildMenuItem(MenuItem item) {
     return GestureDetector(
       onTap: item.onTap,
-      child: Column(
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: item.color ?? Colors.blue[200],
-              borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: AppConstants.lineSpacing,
+          vertical: AppConstants.paragraphSpacing,
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: AppConstants.menuIconSize,
+              height: AppConstants.menuIconSize,
+              decoration: BoxDecoration(
+                color: item.color ?? AppColors.accentColor,
+                borderRadius: BorderRadius.circular(AppConstants.mediumRadius),
+                boxShadow: [
+                  BoxShadow(
+                    color: (item.color ?? AppColors.accentColor).withOpacity(0.3),
+                    blurRadius: 4,
+                    spreadRadius: 0,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(
+                item.icon ?? _getIconForTitle(item.title),
+                color: Colors.white,
+                size: AppConstants.mediumIconSize,
+              ),
             ),
-            child: Icon(
-              item.icon ?? _getIconForTitle(item.title),
-              color: Colors.white,
-              size: 16,
+            SizedBox(height: AppConstants.lineSpacing),
+            Text(
+              item.title,
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.primaryTextColor,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-          ),
-          SizedBox(height: 6),
-          Text(
-            item.title,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -108,27 +117,27 @@ class MenuGridWidget extends StatelessWidget {
   IconData _getIconForTitle(String title) {
     switch (title) {
       case '投票报修':
-        return Icons.build;
+        return Icons.build_outlined;
       case '物业收费':
-        return Icons.payment;
+        return Icons.payment_outlined;
       case '访客登记':
-        return Icons.people;
+        return Icons.people_outline;
       case '车辆管理':
-        return Icons.directions_car;
+        return Icons.directions_car_outlined;
       case '便民信息':
-        return Icons.info;
+        return Icons.info_outline;
       case '投诉建议':
-        return Icons.feedback;
+        return Icons.feedback_outlined;
       case '问卷调查':
-        return Icons.assignment;
+        return Icons.assignment_outlined;
       case '住户投票':
-        return Icons.how_to_vote;
+        return Icons.how_to_vote_outlined;
       case '装修申请':
-        return Icons.construction;
+        return Icons.construction_outlined;
       case '物品放行':
-        return Icons.local_shipping;
+        return Icons.local_shipping_outlined;
       default:
-        return Icons.apps;
+        return Icons.apps_outlined;
     }
   }
 } 

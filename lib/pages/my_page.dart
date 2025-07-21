@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import '../constants/app_constants.dart';
 import '../utils/app_colors.dart';
+import '../utils/app_text_styles.dart';
 
 class MyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -21,7 +23,7 @@ class MyPage extends StatelessWidget {
             // 退出登录按钮
             _buildLogoutButton(),
             
-            SizedBox(height: 20),
+            SizedBox(height: AppConstants.moduleSpacing),
           ],
         ),
       ),
@@ -31,14 +33,14 @@ class MyPage extends StatelessWidget {
   // 头部用户信息区域
   Widget _buildHeaderSection() {
     return Container(
-      height: 200,
+      height: 220,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF4A90E2), // 深蓝色
-            Color(0xFF357ABD), // 稍深的蓝色
+            AppColors.accentColor,
+            AppColors.assistantColor,
           ],
         ),
       ),
@@ -56,115 +58,162 @@ class MyPage extends StatelessWidget {
           ),
           
           // 用户信息内容
-          Padding(
-            padding: EdgeInsets.fromLTRB(20, 60, 20, 20),
-            child: Row(
-              children: [
-                // 用户头像
-                Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 35,
-                      backgroundColor: Colors.white,
-                      child: CircleAvatar(
-                        radius: 32,
-                        backgroundImage: AssetImage('images/splash_logo.png'),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 3),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // 业主标签
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryBlue200,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          '业主',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                
-                SizedBox(width: 16),
-                
-                // 用户信息
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                AppConstants.pageMargin, 
+                AppConstants.sectionSpacing, 
+                AppConstants.pageMargin, 
+                AppConstants.pageMargin,
+              ),
+              child: Row(
+                children: [
+                  // 用户头像
+                  Stack(
                     children: [
-                      Text(
-                        'DASEIN',
-                        style: TextStyle(
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
                           color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      GestureDetector(
-                        onTap: () {
-                          // 编辑资料功能
-                        },
-                        child: Row(
-                          children: [
-                            Text(
-                              '家庭成员3人 >',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
-                                fontSize: 14,
-                              ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.shadowColor,
+                              blurRadius: AppConstants.shadowBlurRadius,
+                              spreadRadius: AppConstants.shadowSpreadRadius,
+                              offset: AppConstants.shadowOffset,
                             ),
                           ],
+                        ),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'images/splash_logo.png',
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.primaryColor,
+                                ),
+                                child: Icon(
+                                  Icons.person,
+                                  color: AppColors.accentColor,
+                                  size: AppConstants.extraLargeIconSize,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      // 业主标签
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: AppConstants.lineSpacing,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryColor,
+                            borderRadius: BorderRadius.circular(AppConstants.cardRadius),
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                          child: Text(
+                            '业主',
+                            style: AppTextStyles.caption.copyWith(
+                              color: AppColors.primaryTextColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
-                
-                // 编辑资料按钮
-                GestureDetector(
-                  onTap: () {
-                    // 编辑资料功能
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                  
+                  SizedBox(width: AppConstants.pageMargin),
+                  
+                  // 用户信息
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.edit, color: Colors.white, size: 16),
-                        SizedBox(width: 4),
                         Text(
-                          '编辑资料',
-                          style: TextStyle(
+                          'DASEIN',
+                          style: AppTextStyles.title.copyWith(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: AppConstants.lineSpacing),
+                        GestureDetector(
+                          onTap: () {
+                            // 编辑资料功能
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.family_restroom,
+                                color: Colors.white.withOpacity(0.9),
+                                size: AppConstants.smallIconSize,
+                              ),
+                              SizedBox(width: AppConstants.lineSpacing / 2),
+                              Text(
+                                '家庭成员3人',
+                                style: AppTextStyles.body.copyWith(
+                                  color: Colors.white.withOpacity(0.9),
+                                ),
+                              ),
+                              SizedBox(width: AppConstants.lineSpacing / 2),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.white.withOpacity(0.7),
+                                size: AppConstants.smallIconSize,
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
+                  
+                  // 编辑资料按钮
+                  GestureDetector(
+                    onTap: () {
+                      // 编辑资料功能
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppConstants.paragraphSpacing,
+                        vertical: AppConstants.lineSpacing,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(AppConstants.largeRadius),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.edit_outlined,
+                            color: Colors.white,
+                            size: AppConstants.smallIconSize,
+                          ),
+                          SizedBox(width: AppConstants.lineSpacing / 2),
+                          Text(
+                            '编辑资料',
+                            style: AppTextStyles.caption.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -175,29 +224,19 @@ class MyPage extends StatelessWidget {
   // 功能图标网格
   Widget _buildFunctionGrid() {
     final functions = [
-      {'icon': Icons.family_restroom, 'title': '家庭成员'},
-      {'icon': Icons.directions_car, 'title': '家庭用车'},
-      {'icon': Icons.people, 'title': '我的访客'},
-      {'icon': Icons.home, 'title': '我的房产'},
-      {'icon': Icons.payment, 'title': '临停缴费'},
-      {'icon': Icons.assignment, 'title': '工单跟踪'},
-      {'icon': Icons.question_answer, 'title': '问卷历史'},
+      {'icon': Icons.family_restroom_outlined, 'title': '家庭成员'},
+      {'icon': Icons.directions_car_outlined, 'title': '家庭用车'},
+      {'icon': Icons.people_outline, 'title': '我的访客'},
+      {'icon': Icons.home_outlined, 'title': '我的房产'},
+      {'icon': Icons.payment_outlined, 'title': '临停缴费'},
+      {'icon': Icons.assignment_outlined, 'title': '工单跟踪'},
+      {'icon': Icons.question_answer_outlined, 'title': '问卷历史'},
     ];
 
     return Container(
-      margin: EdgeInsets.all(16),
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
-      ),
+      margin: EdgeInsets.all(AppConstants.pageMargin),
+      padding: EdgeInsets.all(AppConstants.pageMargin),
+      decoration: AppConstants.cardDecoration,
       child: Column(
         children: [
           // 第一行
@@ -206,7 +245,7 @@ class MyPage extends StatelessWidget {
               child: _buildFunctionItem(function['icon'] as IconData, function['title'] as String),
             )).toList(),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: AppConstants.sectionSpacing),
           // 第二行
           Row(
             children: functions.skip(4).map((function) => Expanded(
@@ -224,31 +263,47 @@ class MyPage extends StatelessWidget {
       onTap: () {
         // 功能点击处理
       },
-      child: Column(
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: AppColors.primaryBlue200,
-              borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: AppConstants.lineSpacing,
+          vertical: AppConstants.paragraphSpacing,
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: AppConstants.menuIconSize,
+              height: AppConstants.menuIconSize,
+              decoration: BoxDecoration(
+                color: AppColors.accentColor,
+                borderRadius: BorderRadius.circular(AppConstants.mediumRadius),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.accentColor.withOpacity(0.3),
+                    blurRadius: 4,
+                    spreadRadius: 0,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: AppConstants.mediumIconSize,
+              ),
             ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-              size: 24,
+            SizedBox(height: AppConstants.lineSpacing),
+            Text(
+              title,
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.primaryTextColor,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[700],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -256,25 +311,15 @@ class MyPage extends StatelessWidget {
   // 设置/法律链接列表
   Widget _buildSettingsList() {
     final settings = [
-      {'title': '用户协议', 'icon': Icons.description},
-      {'title': '隐私政策', 'icon': Icons.privacy_tip},
-      {'title': '当前版本', 'icon': Icons.info, 'subtitle': 'v1.0.0'},
-      {'title': '注销账号', 'icon': Icons.delete_forever},
+      {'title': '用户协议', 'icon': Icons.description_outlined},
+      {'title': '隐私政策', 'icon': Icons.privacy_tip_outlined},
+      {'title': '当前版本', 'icon': Icons.info_outline, 'subtitle': AppConstants.appVersion},
+      {'title': '注销账号', 'icon': Icons.delete_forever_outlined},
     ];
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
-      ),
+      margin: EdgeInsets.symmetric(horizontal: AppConstants.pageMargin),
+      decoration: AppConstants.cardDecoration,
       child: Column(
         children: settings.asMap().entries.map((entry) {
           final index = entry.key;
@@ -299,41 +344,47 @@ class MyPage extends StatelessWidget {
         // 设置项点击处理
       },
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(AppConstants.pageMargin),
         decoration: BoxDecoration(
           border: isLast ? null : Border(
-            bottom: BorderSide(color: Colors.grey[200]!, width: 0.5),
+            bottom: BorderSide(color: AppColors.dividerColor, width: 1),
           ),
         ),
         child: Row(
           children: [
-            Icon(icon, color: Colors.grey[600], size: 20),
-            SizedBox(width: 16),
+            Icon(
+              icon,
+              color: AppColors.accentColor,
+              size: AppConstants.mediumIconSize,
+            ),
+            SizedBox(width: AppConstants.pageMargin),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[800],
+                    style: AppTextStyles.body.copyWith(
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   if (subtitle != null) ...[
-                    SizedBox(height: 2),
+                    SizedBox(height: AppConstants.lineSpacing / 2),
                     Text(
                       subtitle,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.secondaryTextColor,
                       ),
                     ),
                   ],
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: AppColors.hintTextColor,
+              size: AppConstants.smallIconSize,
+            ),
           ],
         ),
       ),
@@ -343,25 +394,16 @@ class MyPage extends StatelessWidget {
   // 退出登录按钮
   Widget _buildLogoutButton() {
     return Container(
-      margin: EdgeInsets.all(16),
+      margin: EdgeInsets.all(AppConstants.pageMargin),
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
           // 退出登录功能
         },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryBlue200,
-          foregroundColor: Colors.white,
-          padding: EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 0,
-        ),
+        style: AppConstants.secondaryButtonStyle,
         child: Text(
           '退出登录',
-          style: TextStyle(
-            fontSize: 16,
+          style: AppTextStyles.body.copyWith(
             fontWeight: FontWeight.w500,
           ),
         ),
