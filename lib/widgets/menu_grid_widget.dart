@@ -9,12 +9,7 @@ class MenuItem {
   final IconData? icon;
   final VoidCallback? onTap;
 
-  MenuItem({
-    required this.title,
-    this.color,
-    this.icon,
-    this.onTap,
-  });
+  MenuItem({required this.title, this.color, this.icon, this.onTap});
 }
 
 class MenuGridWidget extends StatelessWidget {
@@ -23,29 +18,27 @@ class MenuGridWidget extends StatelessWidget {
   final double? itemHeight;
 
   const MenuGridWidget({
-    Key? key,
+    super.key,
     required this.menuItems,
     this.crossAxisCount = 4,
     this.itemHeight,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(AppConstants.pageMargin),
       decoration: AppConstants.cardDecoration,
-      child: Column(
-        children: _buildRows(),
-      ),
+      child: Column(children: _buildRows()),
     );
   }
 
   List<Widget> _buildRows() {
     List<Widget> rows = [];
-    
+
     for (int i = 0; i < menuItems.length; i += crossAxisCount) {
       List<Widget> rowItems = [];
-      
+
       for (int j = 0; j < crossAxisCount; j++) {
         if (i + j < menuItems.length) {
           rowItems.add(Expanded(child: _buildMenuItem(menuItems[i + j])));
@@ -53,25 +46,26 @@ class MenuGridWidget extends StatelessWidget {
           rowItems.add(Expanded(child: SizedBox()));
         }
       }
-      
+
       rows.add(Row(children: rowItems));
-      
+
       // 添加间距，除了最后一行
-      if (i + crossAxisCount < menuItems.length) {
-        rows.add(SizedBox(height: AppConstants.sectionSpacing));
-      }
+      // if (i + crossAxisCount < menuItems.length) {
+      //   rows.add(SizedBox(height: AppConstants.sectionSpacing));
+      // }
     }
-    
+
     return rows;
   }
 
+  //主要图标样式
   Widget _buildMenuItem(MenuItem item) {
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: AppConstants.lineSpacing,
-          vertical: AppConstants.paragraphSpacing,
+          vertical: AppConstants.lineSpacing,
         ),
         child: Column(
           children: [
@@ -83,7 +77,9 @@ class MenuGridWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppConstants.mediumRadius),
                 boxShadow: [
                   BoxShadow(
-                    color: (item.color ?? AppColors.accentColor).withOpacity(0.3),
+                    color: (item.color ?? AppColors.accentColor).withValues(
+                      alpha: 0.3,
+                    ),
                     blurRadius: 4,
                     spreadRadius: 0,
                     offset: Offset(0, 2),
@@ -99,10 +95,11 @@ class MenuGridWidget extends StatelessWidget {
             SizedBox(height: AppConstants.lineSpacing),
             Text(
               item.title,
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.primaryTextColor,
-                fontWeight: FontWeight.w500,
-              ),
+              // style: AppTextStyles.caption.copyWith(
+              //   color: AppColors.primaryTextColor,
+              //   fontWeight: FontWeight.w500,
+              // ),
+              style: AppTextStyles.bodyMedium,
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -140,4 +137,4 @@ class MenuGridWidget extends StatelessWidget {
         return Icons.apps_outlined;
     }
   }
-} 
+}

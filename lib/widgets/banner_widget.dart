@@ -10,11 +10,11 @@ class BannerWidget extends StatefulWidget {
   final Duration autoPlayDuration;
 
   const BannerWidget({
-    Key? key,
+    super.key,
     required this.images,
     this.height = 150,
     this.autoPlayDuration = const Duration(milliseconds: 3000),
-  }) : super(key: key);
+  });
 
   @override
   _BannerWidgetState createState() => _BannerWidgetState();
@@ -113,7 +113,9 @@ class _BannerWidgetState extends State<BannerWidget> {
                 itemBuilder: (context, index) {
                   return Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(AppConstants.cardRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.cardRadius,
+                      ),
                     ),
                     child: Image.asset(
                       widget.images[index],
@@ -123,11 +125,15 @@ class _BannerWidgetState extends State<BannerWidget> {
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(AppConstants.cardRadius),
+                            borderRadius: BorderRadius.circular(
+                              AppConstants.cardRadius,
+                            ),
                             gradient: LinearGradient(
                               colors: [
-                                AppColors.accentColor.withOpacity(0.8),
-                                AppColors.primaryVariant1.withOpacity(0.6),
+                                AppColors.accentColor.withValues(alpha: 0.8),
+                                AppColors.primaryVariant1.withValues(
+                                  alpha: 0.6,
+                                ),
                               ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
@@ -160,7 +166,7 @@ class _BannerWidgetState extends State<BannerWidget> {
               ),
             ),
           ),
-          
+
           // 指示器
           Positioned(
             bottom: AppConstants.pageMargin,
@@ -175,9 +181,9 @@ class _BannerWidgetState extends State<BannerWidget> {
                   margin: EdgeInsets.symmetric(horizontal: 2),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(4),
-                    color: _currentIndex == index 
-                        ? Colors.white 
-                        : Colors.white.withOpacity(0.5),
+                    color: _currentIndex == index
+                        ? Colors.white
+                        : Colors.white.withValues(alpha: 0.5),
                   ),
                 );
               }),
@@ -187,4 +193,4 @@ class _BannerWidgetState extends State<BannerWidget> {
       ),
     );
   }
-} 
+}

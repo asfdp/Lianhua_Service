@@ -15,7 +15,7 @@ class StatusBarManager {
     systemNavigationBarIconBrightness: Brightness.dark,
   );
   
-  /// 深色状态栏样式 - 适用于深色背景的页面（如AppBar）
+  /// 深色状态栏样式 - 适用于深色背景的页面
   static const SystemUiOverlayStyle darkStatusBar = SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light, // 白色图标
@@ -23,6 +23,8 @@ class StatusBarManager {
     systemNavigationBarColor: AppColors.backgroundColor,
     systemNavigationBarIconBrightness: Brightness.dark,
   );
+  
+
   
   /// 主色调状态栏样式 - 适用于使用主色调背景的页面
   static const SystemUiOverlayStyle primaryStatusBar = SystemUiOverlayStyle(
@@ -56,6 +58,8 @@ class StatusBarManager {
   static void setDarkStatusBar() {
     SystemChrome.setSystemUIOverlayStyle(darkStatusBar);
   }
+  
+
   
   /// 为主色调背景页面设置状态栏
   static void setPrimaryStatusBar() {
@@ -95,6 +99,8 @@ class StatusBarManager {
       statusBarStyle: darkStatusBar,
     );
   }
+  
+
   
   /// 主色调背景页面包装器
   static Widget wrapPrimaryPage(Widget child) {

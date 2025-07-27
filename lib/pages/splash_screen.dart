@@ -3,14 +3,18 @@ import 'package:flutter/services.dart';
 import '../constants/app_constants.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
+import '../services/navigation_service.dart';
 import 'main_container.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
@@ -19,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
-    
+
     // 为启动页面设置特定的状态栏样式
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -30,51 +34,41 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
     );
-    
+
     // 初始化动画控制器
     _fadeController = AnimationController(
       duration: AppConstants.longAnimationDuration,
       vsync: this,
     );
-    
+
     _slideController = AnimationController(
       duration: Duration(milliseconds: 1200),
       vsync: this,
     );
-    
+
     // 创建动画
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeInOut,
-    ));
-    
-    _slideAnimation = Tween<Offset>(
-      begin: Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeOutCubic,
-    ));
-    
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
+    );
+
+    _slideAnimation = Tween<Offset>(begin: Offset(0, 0.3), end: Offset.zero)
+        .animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
+
     // 启动动画
     _fadeController.forward();
     Future.delayed(AppConstants.mediumAnimationDuration, () {
       _slideController.forward();
     });
-    
+
     _navigateToHome();
   }
 
   void _navigateToHome() async {
     await Future.delayed(Duration(seconds: 3));
     if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainContainer()),
-      );
+      NavigationService.replacePage(context, MainContainer());
     }
   }
 
@@ -99,7 +93,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           children: [
             // 背景装饰
             _buildBackgroundDecoration(),
-            
+
             // 主要内容
             SafeArea(
               child: Padding(
@@ -109,7 +103,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                     children: [
                       // 顶部留白
                       Spacer(flex: 2),
-                      
+
                       // Logo部分
                       FadeTransition(
                         opacity: _fadeAnimation,
@@ -118,10 +112,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                           child: _buildLogo(),
                         ),
                       ),
-                      
+
                       // 中间留白
                       SizedBox(height: AppConstants.moduleSpacing),
-                      
+
                       // 标语部分
                       FadeTransition(
                         opacity: _fadeAnimation,
@@ -130,7 +124,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                           child: _buildSlogan(),
                         ),
                       ),
-                      
+
                       // 底部留白
                       Spacer(flex: 2),
                     ],
@@ -240,12 +234,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       bottom: 0,
       left: 0,
       right: 0,
-      child: Container(
+      child: SizedBox(
         height: 200,
-        child: CustomPaint(
-          painter: WavesPainter(),
-          size: Size.infinite,
-        ),
+        child: CustomPaint(painter: WavesPainter(), size: Size.infinite),
       ),
     );
   }
@@ -256,46 +247,54 @@ class WavesPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.primaryColor.withOpacity(0.4)
+      ..color = AppColors.primaryColor.withValues(alpha: 0.4)
       ..style = PaintingStyle.fill;
 
     final path = Path();
-    
+
     // 第一层波浪
     path.moveTo(0, size.height * 0.6);
     path.quadraticBezierTo(
-      size.width * 0.25, size.height * 0.4,
-      size.width * 0.5, size.height * 0.5,
+      size.width * 0.25,
+      size.height * 0.4,
+      size.width * 0.5,
+      size.height * 0.5,
     );
     path.quadraticBezierTo(
-      size.width * 0.75, size.height * 0.6,
-      size.width, size.height * 0.4,
+      size.width * 0.75,
+      size.height * 0.6,
+      size.width,
+      size.height * 0.4,
     );
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     path.close();
-    
+
     canvas.drawPath(path, paint);
-    
+
     // 第二层波浪
     final paint2 = Paint()
-      ..color = AppColors.primaryVariant1.withOpacity(0.3)
+      ..color = AppColors.primaryVariant1.withValues(alpha: 0.3)
       ..style = PaintingStyle.fill;
 
     final path2 = Path();
     path2.moveTo(0, size.height * 0.8);
     path2.quadraticBezierTo(
-      size.width * 0.3, size.height * 0.6,
-      size.width * 0.6, size.height * 0.7,
+      size.width * 0.3,
+      size.height * 0.6,
+      size.width * 0.6,
+      size.height * 0.7,
     );
     path2.quadraticBezierTo(
-      size.width * 0.8, size.height * 0.8,
-      size.width, size.height * 0.6,
+      size.width * 0.8,
+      size.height * 0.8,
+      size.width,
+      size.height * 0.6,
     );
     path2.lineTo(size.width, size.height);
     path2.lineTo(0, size.height);
     path2.close();
-    
+
     canvas.drawPath(path2, paint2);
   }
 

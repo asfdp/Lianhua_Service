@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import '../constants/app_constants.dart';
+import '../services/navigation_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
+import '../utils/app_bar_config.dart';
 
 class PaymentPage extends StatefulWidget {
+  const PaymentPage({super.key});
+
   @override
   _PaymentPageState createState() => _PaymentPageState();
 }
@@ -37,14 +41,23 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: AppBar(
-        title: Text(
-          '物业收费',
-          style: AppTextStyles.h1.copyWith(color: Colors.white),
-        ),
-        backgroundColor: AppColors.accentColor,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white),
+      appBar: AppBarConfig.primaryAppBar(
+        title: '物业缴费',
+        actions: [
+          AppBarConfig.notificationAction(
+            onPressed: () {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('查看缴费通知')));
+            },
+            badgeCount: 1,
+          ),
+          AppBarConfig.settingsAction(
+            onPressed: () {
+              _showPaymentSettings(context);
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppConstants.pageMargin),
@@ -61,17 +74,19 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   Widget _buildSummaryCard() {
-    final unpaidBills = _bills.where((bill) => bill['status'] == '未缴费').toList();
-    final totalAmount = unpaidBills.fold<double>(0.0, (sum, bill) => sum + bill['amount']);
+    final unpaidBills = _bills
+        .where((bill) => bill['status'] == '未缴费')
+        .toList();
+    final totalAmount = unpaidBills.fold<double>(
+      0.0,
+      (sum, bill) => sum + bill['amount'],
+    );
 
     return Container(
       padding: EdgeInsets.all(AppConstants.pageMargin),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppColors.primaryColor,
-            AppColors.primaryVariant1,
-          ],
+          colors: [AppColors.primaryColor, AppColors.primaryVariant1],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -105,9 +120,7 @@ class _PaymentPageState extends State<PaymentPage> {
               SizedBox(width: AppConstants.paragraphSpacing),
               Text(
                 '缴费概览',
-                style: AppTextStyles.h1.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppTextStyles.h1.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -119,7 +132,10 @@ class _PaymentPageState extends State<PaymentPage> {
               ),
               SizedBox(width: AppConstants.pageMargin),
               Expanded(
-                child: _buildSummaryItem('待缴费金额', '¥${totalAmount.toStringAsFixed(2)}'),
+                child: _buildSummaryItem(
+                  '待缴费金额',
+                  '¥${totalAmount.toStringAsFixed(2)}',
+                ),
               ),
             ],
           ),
@@ -156,9 +172,7 @@ class _PaymentPageState extends State<PaymentPage> {
       children: [
         Text(
           '缴费记录',
-          style: AppTextStyles.h1.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.h1.copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: AppConstants.paragraphSpacing),
         ListView.builder(
@@ -175,7 +189,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
   Widget _buildBillItem(Map<String, dynamic> bill) {
     final isUnpaid = bill['status'] == '未缴费';
-    
+
     return Container(
       margin: EdgeInsets.only(bottom: AppConstants.paragraphSpacing),
       padding: EdgeInsets.all(AppConstants.pageMargin),
@@ -183,7 +197,9 @@ class _PaymentPageState extends State<PaymentPage> {
         color: isUnpaid ? AppColors.primaryColor : AppColors.backgroundColor,
         borderRadius: BorderRadius.circular(AppConstants.cardRadius),
         border: Border.all(
-          color: isUnpaid ? AppColors.accentColor.withOpacity(0.3) : AppColors.dividerColor,
+          color: isUnpaid
+              ? AppColors.accentColor.withValues(alpha: 0.3)
+              : AppColors.dividerColor,
           width: 1,
         ),
         boxShadow: [
@@ -203,9 +219,7 @@ class _PaymentPageState extends State<PaymentPage> {
             children: [
               Text(
                 bill['title'],
-                style: AppTextStyles.h2.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.w600),
               ),
               Container(
                 padding: EdgeInsets.symmetric(
@@ -213,15 +227,17 @@ class _PaymentPageState extends State<PaymentPage> {
                   vertical: AppConstants.lineSpacing / 2,
                 ),
                 decoration: BoxDecoration(
-                  color: isUnpaid 
-                      ? AppColors.warningColor.withOpacity(0.1) 
-                      : AppColors.successColor.withOpacity(0.1),
+                  color: isUnpaid
+                      ? AppColors.warningColor.withValues(alpha: 0.1)
+                      : AppColors.successColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppConstants.smallRadius),
                 ),
                 child: Text(
                   bill['status'],
                   style: AppTextStyles.caption.copyWith(
-                    color: isUnpaid ? AppColors.warningColor : AppColors.successColor,
+                    color: isUnpaid
+                        ? AppColors.warningColor
+                        : AppColors.successColor,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -258,7 +274,9 @@ class _PaymentPageState extends State<PaymentPage> {
                 ElevatedButton(
                   onPressed: () => _payBill(bill),
                   style: AppConstants.primaryButtonStyle.copyWith(
-                    minimumSize: MaterialStateProperty.all(Size(100, AppConstants.smallButtonHeight)),
+                    minimumSize: WidgetStateProperty.all(
+                      Size(100, AppConstants.smallButtonHeight),
+                    ),
                   ),
                   child: Text(
                     '立即缴费',
@@ -286,9 +304,7 @@ class _PaymentPageState extends State<PaymentPage> {
           ),
           title: Text(
             '确认缴费',
-            style: AppTextStyles.h1.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppTextStyles.h1.copyWith(fontWeight: FontWeight.bold),
           ),
           content: Text(
             '确认缴费 ${bill['title']} ¥${bill['amount'].toStringAsFixed(2)}？',
@@ -296,18 +312,15 @@ class _PaymentPageState extends State<PaymentPage> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => NavigationService.goBack(context),
               style: TextButton.styleFrom(
                 foregroundColor: AppColors.secondaryTextColor,
               ),
-              child: Text(
-                '取消',
-                style: AppTextStyles.body,
-              ),
+              child: Text('取消', style: AppTextStyles.body),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context);
+                NavigationService.goBack(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -318,7 +331,9 @@ class _PaymentPageState extends State<PaymentPage> {
                     behavior: SnackBarBehavior.floating,
                     margin: EdgeInsets.all(AppConstants.pageMargin),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppConstants.buttonRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.buttonRadius,
+                      ),
                     ),
                   ),
                 );
@@ -327,7 +342,9 @@ class _PaymentPageState extends State<PaymentPage> {
                 });
               },
               style: AppConstants.primaryButtonStyle.copyWith(
-                minimumSize: MaterialStateProperty.all(Size(80, AppConstants.smallButtonHeight)),
+                minimumSize: WidgetStateProperty.all(
+                  Size(80, AppConstants.smallButtonHeight),
+                ),
               ),
               child: Text(
                 '确认',
@@ -339,4 +356,55 @@ class _PaymentPageState extends State<PaymentPage> {
       },
     );
   }
-} 
+
+  void _showPaymentSettings(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('缴费设置', style: AppTextStyles.h3),
+              SizedBox(height: 16),
+              ListTile(
+                leading: Icon(Icons.auto_fix_high),
+                title: Text('自动缴费', style: AppTextStyles.bodyMedium),
+                onTap: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('设置自动缴费功能')));
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.history),
+                title: Text('缴费记录', style: AppTextStyles.bodyMedium),
+                onTap: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('查看历史缴费记录')));
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.receipt_long),
+                title: Text('电子发票', style: AppTextStyles.bodyMedium),
+                onTap: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('查看电子发票')));
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

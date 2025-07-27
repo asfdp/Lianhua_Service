@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import '../constants/app_constants.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
+import '../utils/app_bar_config.dart';
 
 class RepairPage extends StatefulWidget {
+  const RepairPage({super.key});
+
   @override
   _RepairPageState createState() => _RepairPageState();
 }
@@ -33,14 +36,23 @@ class _RepairPageState extends State<RepairPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: AppBar(
-        title: Text(
-          '投票报修',
-          style: AppTextStyles.h1.copyWith(color: Colors.white),
-        ),
-        backgroundColor: AppColors.accentColor,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white),
+      appBar: AppBarConfig.accentAppBar(
+        title: '报事报修',
+        actions: [
+          AppBarConfig.notificationAction(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('查看历史报修记录')),
+              );
+            },
+            badgeCount: 2,
+          ),
+          AppBarConfig.menuAction(
+            onPressed: () {
+              _showRepairMenu(context);
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppConstants.pageMargin),
@@ -61,49 +73,82 @@ class _RepairPageState extends State<RepairPage> {
     );
   }
 
+  void _showRepairMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('报修选项', style: AppTextStyles.h3),
+              SizedBox(height: 16),
+              ListTile(
+                leading: Icon(Icons.history),
+                title: Text('历史记录', style: AppTextStyles.bodyMedium),
+                onTap: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('查看历史报修记录')),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.help_outline),
+                title: Text('报修指南', style: AppTextStyles.bodyMedium),
+                onTap: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('查看报修填写指南')),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildInfoCard() {
     return Container(
       padding: EdgeInsets.all(AppConstants.pageMargin),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primaryColor,
-            AppColors.primaryVariant1,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(AppConstants.cardRadius),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowColor,
-            blurRadius: AppConstants.shadowBlurRadius,
-            spreadRadius: AppConstants.shadowSpreadRadius,
-            offset: AppConstants.shadowOffset,
-          ),
-        ],
-      ),
-      child: Row(
+      decoration: AppConstants.cardDecoration,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.all(AppConstants.lineSpacing),
-            decoration: BoxDecoration(
-              color: AppColors.accentColor,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.info_outline,
-              color: Colors.white,
-              size: AppConstants.mediumIconSize,
-            ),
-          ),
-          SizedBox(width: AppConstants.paragraphSpacing),
-          Expanded(
-            child: Text(
-              '请详细填写报修信息，我们会尽快安排维修人员处理',
-              style: AppTextStyles.body.copyWith(
-                color: AppColors.primaryTextColor,
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(AppConstants.lineSpacing),
+                decoration: BoxDecoration(
+                  color: AppColors.accentColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.build_outlined,
+                  color: Colors.white,
+                  size: AppConstants.mediumIconSize,
+                ),
               ),
+              SizedBox(width: AppConstants.paragraphSpacing),
+              Text(
+                '报修服务',
+                style: AppTextStyles.h2.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppConstants.paragraphSpacing),
+          Text(
+            '请详细填写报修信息，我们会尽快安排维修人员处理',
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.primaryTextColor,
             ),
           ),
         ],
@@ -120,7 +165,7 @@ class _RepairPageState extends State<RepairPage> {
         children: [
           Text(
             '报修信息',
-            style: AppTextStyles.h1.copyWith(
+            style: AppTextStyles.h2.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -129,7 +174,7 @@ class _RepairPageState extends State<RepairPage> {
           // 问题类型选择
           Text(
             '问题类型',
-            style: AppTextStyles.h2.copyWith(
+            style: AppTextStyles.h3.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -158,8 +203,8 @@ class _RepairPageState extends State<RepairPage> {
           
           // 问题标题
           Text(
-            '问题标题',
-            style: AppTextStyles.h2.copyWith(
+            '主要问题',
+            style: AppTextStyles.h3.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -182,7 +227,7 @@ class _RepairPageState extends State<RepairPage> {
           // 详细描述
           Text(
             '详细描述',
-            style: AppTextStyles.h2.copyWith(
+            style: AppTextStyles.h3.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),

@@ -1,4 +1,4 @@
-name: test_folder
+name: lianhua
 description: "A new test Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -34,6 +34,24 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+
+  #get widget组件
+  getwidget: ^6.0.0
+
+  #flutter_animate组件
+  flutter_animate: ^4.5.2
+
+  #相机和相册访问
+  image_picker: ^1.1.2
+
+  # 网络请求
+  http: ^1.1.0
+  
+  # 本地存储
+  shared_preferences: ^2.2.2
+  
+  # Google Fonts - 用于加载思源黑体等字体
+  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:
