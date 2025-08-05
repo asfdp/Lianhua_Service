@@ -10,6 +10,10 @@ import '../pages/activity_detail_page.dart';
 import '../pages/my_page.dart';
 import '../pages/main_container.dart';
 import '../utils/app_bar_usage_guide.dart';
+import '../pages/neumorphic_demo_page.dart';
+import '../pages/high_refresh_rate_demo_page.dart';
+import '../pages/register_page.dart';
+import '../pages/login_page.dart';
 import '../models/notice.dart';
 import '../models/message.dart';
 import '../models/activity.dart';
@@ -17,6 +21,7 @@ import '../models/activity.dart';
 /// 路由配置服务 - 管理应用的所有命名路由
 class RouteConfig {
   // 路由名称常量
+  static const String login = '/login';
   static const String main = '/main';
   static const String home = '/home';
   static const String repair = '/repair';
@@ -28,6 +33,9 @@ class RouteConfig {
   static const String activityDetail = '/activity-detail';
   static const String my = '/my';
   static const String appBarGuide = '/app-bar-guide';
+  static const String neumorphicDemo = '/neumorphic-demo';
+  static const String highRefreshRateDemo = '/high-refresh-rate-demo';
+  static const String register = '/register';
 
   /// 获取所有路由配置
   static Map<String, WidgetBuilder> getRoutes() {
@@ -40,6 +48,10 @@ class RouteConfig {
       historyCenter: (context) => HistoryCenterPage(),
       my: (context) => MyPage(),
       appBarGuide: (context) => AppBarUsageGuidePage(),
+      neumorphicDemo: (context) => NeumorphicDemoPage(),
+      highRefreshRateDemo: (context) => HighRefreshRateDemoPage(),
+      login: (context) => const LoginPage(),
+      register: (context) => const RegisterPage(),
     };
   }
 
@@ -87,25 +99,16 @@ class RouteConfig {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Colors.grey,
-              ),
+              Icon(Icons.error_outline, size: 64, color: Colors.grey),
               SizedBox(height: 16),
               Text(
                 '页面不存在',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
               Text(
                 '请求的页面 ${settings.name} 不存在',
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
+                style: TextStyle(color: Colors.grey),
               ),
               SizedBox(height: 24),
               ElevatedButton(
@@ -120,8 +123,10 @@ class RouteConfig {
   }
 
   /// 路由观察器 - 用于路由分析和调试
-  static RouteObserver<Route<dynamic>> routeObserver = RouteObserver<Route<dynamic>>();
+  static RouteObserver<Route<dynamic>> routeObserver =
+      RouteObserver<Route<dynamic>>();
 
   /// 路由分析器 - 用于路由性能分析
-  static RouteObserver<PageRoute<dynamic>> pageRouteObserver = RouteObserver<PageRoute<dynamic>>();
-} 
+  static RouteObserver<PageRoute<dynamic>> pageRouteObserver =
+      RouteObserver<PageRoute<dynamic>>();
+}
